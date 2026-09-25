@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Từ Điển & Dịch Thuật Việt - Jrai</title>
+  <meta name="description" content="Ứng dụng tra cứu từ điển và dịch thuật hai chiều Tiếng Việt - Tiếng Jrai trên điện thoại. Hỗ trợ phát âm, học từ vựng 10 từ ngẫu nhiên và lưu từ mới." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app-container" class="app-container">
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand-group">
+          <span class="brand-title">Jrai Lexicon</span>
+          <span class="brand-divider">/</span>
+          <span class="brand-subtitle" id="dictionary-stat-badge">Từ điển song ngữ</span>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-theme-toggle" class="theme-toggle-btn" aria-label="Đổi giao diện Sáng/Tối" title="Đổi giao diện">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="main-content">
+      <!-- 1. TAB: TRA TỪ & DỊCH THUẬT (MẶC ĐỊNH) -->
+      <section id="tab-translate" class="tab-panel active">
+        <!-- DIRECTION SWITCHER -->
+        <div class="direction-bar">
+          <div class="lang-selector">
+            <span class="lang-label active" id="source-lang-label">Tiếng Việt</span>
+            <button id="btn-swap-direction" class="swap-btn" aria-label="Đổi chiều dịch" title="Đổi chiều dịch">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8v12M17 20l4-4M17 20l-4-4"/>
+              </svg>
+            </button>
+            <span class="lang-label" id="target-lang-label">Tiếng Jrai</span>
+          </div>
+        </div>
+
+        <!-- SEARCH INPUT WRAPPER -->
+        <div class="search-panel">
+          <div class="input-row">
+            <textarea 
+              id="search-input" 
+              class="search-input" 
+              rows="2" 
+              placeholder="Nhập từ hoặc cụm từ..."
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+            ></textarea>
+            <button id="btn-clear-search" class="clear-btn hidden" aria-label="Xóa nội dung" title="Xóa">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="search-meta-row">
+            <span class="search-hint" id="typing-indicator">Tìm kiếm tức thì theo thời gian thực</span>
+            <button id="btn-speak-source" class="inline-audio-btn hidden" aria-label="Phát âm từ nguồn" title="Phát âm">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- TRANSLATION RESULT CARD -->
+        <div id="result-wrapper" class="result-wrapper">
+          <!-- EMPTY PLACEHOLDER -->
+          <div id="result-placeholder" class="empty-state">
+            <div class="empty-text">
+              <h2 class="empty-title">Tra cứu hai chiều Việt — Jrai</h2>
+              <p class="empty-desc">Nhập từ vựng ở trên để xem bản dịch chính xác, phiên âm, từ loại và ví dụ ngữ cảnh.</p>
+            </div>
+            
+            <div class="suggested-terms">
+              <span class="suggest-caption">Từ khóa thông dụng</span>
+              <div class="terms-grid" id="quick-tags-container">
+                <button class="term-btn" data-word="xin chào">xin chào</button>
+                <button class="term-btn" data-word="cảm ơn">cảm ơn</button>
+                <button class="term-btn" data-word="cơm">cơm</button>
+                <button class="term-btn" data-word="nhà rông">nhà rông</button>
+                <button class="term-btn" data-word="cồng chiêng">cồng chiêng</button>
+                <button class="term-btn" data-word="yêu">yêu</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DETAILED RESULT CARD -->
+          <div id="detailed-result-card" class="result-card hidden">
+            <div class="card-top-bar">
+              <span id="result-part-of-speech" class="part-of-speech-label">Danh từ</span>
+              <div class="card-actions">
+                <button id="btn-speak-target" class="text-action-btn" aria-label="Phát âm kết quả" title="Phát âm">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                  </svg>
+                  <span>Phát âm</span>
+                </button>
+                <button id="btn-copy-target" class="text-action-btn" aria-label="Sao chép" title="Sao chép">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                  <span>Chép</span>
+                </button>
+                <button id="btn-fav-target" class="icon-action-btn" aria-label="Lưu mục yêu thích" title="Lưu mục">
+                  <svg id="fav-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="card-main-output">
+              <h2 id="result-target-word" class="target-heading">khul kơ nơm</h2>
+              <p id="result-source-word" class="source-subheading">Nghĩa gốc: xin chào</p>
+            </div>
+
+            <!-- EXAMPLE SECTION -->
+            <div id="result-example-box" class="example-section">
+              <div class="example-title-row">
+                <span class="example-caption">Ví dụ ngữ cảnh</span>
+                <button id="btn-speak-example" class="example-audio-trigger" aria-label="Nghe câu ví dụ" title="Nghe câu ví dụ">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  </svg>
+                </button>
+              </div>
+              <p id="result-example-target" class="example-target-line">Khul kơ nơm abih bang!</p>
+              <p id="result-example-source" class="example-source-line">Xin chào mọi người!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REALTIME SUGGESTIONS -->
+        <div id="suggestions-box" class="suggestions-panel hidden">
+          <div class="suggestions-header">
+            <span>Từ vựng liên quan</span>
+            <span id="suggestions-count" class="count-tag">0</span>
+          </div>
+          <div id="suggestions-list" class="suggestions-list">
+            <!-- Dynamic elements inserted here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. TAB: TOÀN BỘ TỪ ĐIỂN -->
+      <section id="tab-browse" class="tab-panel">
+        <div class="content-card">
+          <div class="panel-header">
+            <h2 class="panel-title">Mục Lục Từ Vựng</h2>
+            <p class="panel-desc">Toàn bộ kho dữ liệu từ điển đối chiếu Việt — Jrai.</p>
+          </div>
+
+          <div class="filter-bar">
+            <input 
+              type="text" 
+              id="browse-filter-input" 
+              class="filter-search-input" 
+              placeholder="Lọc từ trong danh sách..." 
+            />
+            <select id="browse-category-select" class="filter-dropdown">
+              <option value="all">Tất cả loại từ</option>
+              <option value="Danh từ">Danh từ</option>
+              <option value="Động từ">Động từ</option>
+              <option value="Tính từ">Tính từ</option>
+              <option value="Số từ">Số từ</option>
+              <option value="Thán từ">Thán từ</option>
+              <option value="Đại từ">Đại từ</option>
+              <option value="Cụm từ">Cụm từ</option>
+            </select>
+          </div>
+
+          <div class="list-summary">
+            <span id="browse-total-count" class="summary-count">Hiển thị: 0 từ</span>
+            <span class="status-indicator">Đồng bộ</span>
+          </div>
+
+          <div id="browse-dictionary-list" class="words-table">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. TAB: KIỂM TRA GHI NHỚ 10 TỪ -->
+      <section id="tab-quiz" class="tab-panel">
+        <div class="content-card">
+          <!-- QUIZ INTRO SCREEN -->
+          <div id="quiz-intro-screen" class="quiz-screen active">
+            <div class="quiz-hero">
+              <h2 class="panel-title">Luyện Tập Ghi Nhớ</h2>
+              <p class="panel-desc">Đánh giá khả năng ghi nhớ qua bộ 10 từ ngẫu nhiên từ kho dữ liệu.</p>
+            </div>
+            
+            <div class="mode-selection">
+              <label class="mode-card">
+                <input type="radio" name="quiz-mode" value="vi-to-jrai" checked />
+                <span class="mode-text">Tiếng Việt ➔ Tiếng Jrai</span>
+              </label>
+              <label class="mode-card">
+                <input type="radio" name="quiz-mode" value="jrai-to-vi" />
+                <span class="mode-text">Tiếng Jrai ➔ Tiếng Việt</span>
+              </label>
+            </div>
+
+            <button id="btn-start-quiz" class="btn-primary-full">
+              Bắt đầu bài kiểm tra
+            </button>
+          </div>
+
+          <!-- QUIZ PLAY SCREEN -->
+          <div id="quiz-play-screen" class="quiz-screen">
+            <div class="quiz-stepper">
+              <div class="stepper-labels">
+                <span id="quiz-question-counter" class="step-count">Câu 1 / 10</span>
+                <span id="quiz-current-score" class="step-score">Điểm: 0</span>
+              </div>
+              <div class="stepper-track">
+                <div id="quiz-progress-bar" class="stepper-fill" style="width: 10%;"></div>
+              </div>
+            </div>
+
+            <div class="question-display">
+              <span class="question-prompt">Từ vựng cần dịch:</span>
+              <div class="question-main-row">
+                <h3 id="quiz-target-word" class="question-word">Đang tải...</h3>
+                <button id="btn-quiz-speak" class="inline-audio-btn" aria-label="Phát âm từ" title="Phát âm">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  </svg>
+                </button>
+              </div>
+              <span id="quiz-word-type" class="question-type-tag">Danh từ</span>
+            </div>
+
+            <!-- 4 OPTIONS -->
+            <div id="quiz-options-container" class="options-stack">
+              <!-- Dynamically filled with 4 buttons -->
+            </div>
+
+            <div id="quiz-feedback-box" class="feedback-panel hidden">
+              <div id="quiz-feedback-text" class="feedback-message"></div>
+              <button id="btn-quiz-next" class="btn-primary">Tiếp tục</button>
+            </div>
+          </div>
+
+          <!-- QUIZ RESULT SCREEN -->
+          <div id="quiz-result-screen" class="quiz-screen">
+            <div class="result-summary-box">
+              <span class="result-pretitle">Kết quả kiểm tra</span>
+              <div class="score-numeral">
+                <span id="quiz-final-score" class="score-value">0 / 10</span>
+              </div>
+              <h3 id="quiz-final-rating" class="score-verdict">Hoàn thành</h3>
+              <p id="quiz-final-message" class="score-desc">Đã kiểm tra xong 10 từ ngẫu nhiên.</p>
+            </div>
+            
+            <button id="btn-quiz-restart" class="btn-primary-full">
+              Thực hiện lại
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. TAB: THÊM TỪ MỚI -->
+      <section id="tab-add" class="tab-panel">
+        <div class="content-card">
+          <div class="panel-header">
+            <h2 class="panel-title">Bổ Sung Từ Mới</h2>
+            <p class="panel-desc">Từ mới được lưu cục bộ trên thiết bị và đồng bộ ngay vào thanh tìm kiếm.</p>
+          </div>
+
+          <form id="form-add-word" class="standard-form">
+            <div class="field-item">
+              <label for="input-new-vi" class="field-label">Tiếng Việt <span class="required">*</span></label>
+              <input type="text" id="input-new-vi" class="field-input" placeholder="Ví dụ: hoa hồng, con voi..." required />
+            </div>
+
+            <div class="field-item">
+              <label for="input-new-jrai" class="field-label">Tiếng Jrai <span class="required">*</span></label>
+              <input type="text" id="input-new-jrai" class="field-input" placeholder="Ví dụ: bơnga, rơmôk..." required />
+            </div>
+
+            <div class="field-item">
+              <label for="select-new-type" class="field-label">Loại từ</label>
+              <select id="select-new-type" class="field-input">
+                <option value="Danh từ">Danh từ</option>
+                <option value="Động từ">Động từ</option>
+                <option value="Tính từ">Tính từ</option>
+                <option value="Số từ">Số từ</option>
+                <option value="Thán từ">Thán từ</option>
+                <option value="Đại từ">Đại từ</option>
+                <option value="Cụm từ">Cụm từ</option>
+              </select>
+            </div>
+
+            <div class="field-item">
+              <label for="input-new-ex-vi" class="field-label">Ví dụ Tiếng Việt</label>
+              <input type="text" id="input-new-ex-vi" class="field-input" placeholder="Câu ví dụ thực tế..." />
+            </div>
+
+            <div class="field-item">
+              <label for="input-new-ex-jrai" class="field-label">Ví dụ Tiếng Jrai</label>
+              <input type="text" id="input-new-ex-jrai" class="field-input" placeholder="Câu ví dụ tương ứng bằng tiếng Jrai..." />
+            </div>
+
+            <div class="field-item">
+              <label for="input-new-audio-jrai" class="field-label">Đường dẫn file MP3 (Tùy chọn)</label>
+              <input type="url" id="input-new-audio-jrai" class="field-input" placeholder="https://... (để trống nếu sử dụng phát âm tự động)" />
+            </div>
+
+            <button type="submit" class="btn-primary-full">
+              Lưu vào từ điển
+            </button>
+          </form>
+
+          <!-- LIST OF USER ADDED WORDS -->
+          <div class="custom-words-section">
+            <div class="section-title-row">
+              <h3 class="section-heading">Từ đã thêm (<span id="user-words-count">0</span>)</h3>
+              <button id="btn-clear-user-words" class="text-danger-btn" title="Xóa toàn bộ từ tự thêm">Xóa toàn bộ</button>
+            </div>
+            <div id="user-words-list" class="custom-words-list">
+              <p class="empty-list-notice">Chưa có từ nào được thêm thủ công.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. TAB: LIÊN HỆ & THÔNG TIN DỰ ÁN -->
+      <section id="tab-contact" class="tab-panel">
+        <div class="content-card">
+          <div class="panel-header">
+            <h2 class="panel-title">Kênh Liên Hệ & Phản Hồi</h2>
+            <p class="panel-desc">Kết nối với quản trị viên qua các kênh liên lạc chính thức bên dưới:</p>
+          </div>
+
+          <!--
+            ==================================================================
+            HƯỚNG DẪN: Thay đổi thuộc tính `href` bên dưới bằng link thật của bạn:
+            ==================================================================
+          -->
+          <div class="contact-channels">
+            <!-- 1. ZALO -->
+            <a href="https://zalo.me/0900000000" target="_blank" rel="noopener noreferrer" class="contact-row channel-zalo">
+              <div class="channel-main">
+                <div class="channel-icon-box icon-zalo">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.48 5.43 3.79 7.07-.17 1.22-.72 2.76-1.57 3.86-.14.18-.03.44.19.46 1.83.17 3.74-.47 5.08-1.42.81.18 1.65.28 2.51.28 5.52 0 10-4.03 10-9s-4.48-9-10-9zm-1.8 12.35H7.2c-.3 0-.52-.3-.42-.58l2.48-5.95c.12-.28.38-.47.68-.47h.02c.3 0 .57.18.68.47l2.48 5.95c.1.28-.12.58-.42.58h-1a.75.75 0 0 1-.69-.47l-.4-1.01H8.69l-.4 1.01a.75.75 0 0 1-.69.47zm5.12 0h-.98c-.33 0-.56-.32-.46-.62l1.97-5.91c.11-.31.39-.53.72-.53h.02c.33 0 .61.22.72.53l1.97 5.91c.1.3-.13.62-.46.62h-.98c-.27 0-.5-.17-.58-.43l-.45-1.51h-1.87l-.45 1.51c-.08.26-.31.43-.58.43z"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <span class="contact-title">Zalo</span>
+                  <span class="contact-sub">Nhắn tin trực tiếp qua Zalo</span>
+                </div>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <!-- 2. DISCORD -->
+            <a href="https://discord.gg/your-invite-code" target="_blank" rel="noopener noreferrer" class="contact-row channel-discord">
+              <div class="channel-main">
+                <div class="channel-icon-box icon-discord">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <span class="contact-title">Discord</span>
+                  <span class="contact-sub">Máy chủ cộng đồng thảo luận</span>
+                </div>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <!-- 3. TIKTOK -->
+            <a href="https://www.tiktok.com/@your_tiktok_id" target="_blank" rel="noopener noreferrer" class="contact-row channel-tiktok">
+              <div class="channel-main">
+                <div class="channel-icon-box icon-tiktok">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.84-4.49V8.77a8.21 8.21 0 0 0 4.83 1.56V6.89c-.3.003-.6-.067-.9-.2z"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <span class="contact-title">TikTok</span>
+                  <span class="contact-sub">Kênh văn hóa & tiếng nói Jrai</span>
+                </div>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <!-- 4. EMAIL -->
+            <a href="mailto:admin@example.com?subject=Dong_Gop_Tu_Dien_Jrai" class="contact-row channel-email">
+              <div class="channel-main">
+                <div class="channel-icon-box icon-email">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <span class="contact-title">Email</span>
+                  <span class="contact-sub">Hộp thư tiếp nhận góp ý từ điển</span>
+                </div>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <!-- 5. PHONE / HOTLINE -->
+            <a href="tel:0900000000" class="contact-row channel-phone">
+              <div class="channel-main">
+                <div class="channel-icon-box icon-phone">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </div>
+                <div class="contact-meta">
+                  <span class="contact-title">Số điện thoại</span>
+                  <span class="contact-sub">Đường dây hỗ trợ trực tiếp</span>
+                </div>
+              </div>
+              <svg class="chevron-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </div>
+
+          <!-- PROJECT ABOUT CARD -->
+          <div class="project-info-card">
+            <h3 class="info-card-title">Về dự án Từ Điển Jrai</h3>
+            <p class="info-card-text">
+              Dự án hướng đến việc số hóa, bảo tồn và phổ biến ngôn ngữ đồng bào Jrai tại Tây Nguyên. Toàn bộ từ vựng được đối chiếu chuẩn ngữ nghĩa, phục vụ học tập, nghiên cứu và giao tiếp cộng đồng.
+            </p>
+            <div class="info-meta-row">
+              <span>Phiên bản: 1.0.0</span>
+              <span class="dot-sep">·</span>
+              <span>Dữ liệu mở</span>
+              <span class="dot-sep">·</span>
+              <span>2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MINIMALIST BOTTOM NAVIGATION BAR (SLEEK SVG ICONS) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="tab-translate" aria-label="Tra từ">
+        <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span class="nav-label">Tra từ</span>
+      </button>
+
+      <button class="nav-item" data-tab="tab-browse" aria-label="Từ điển">
+        <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span class="nav-label">Từ điển</span>
+      </button>
+
+      <button class="nav-item" data-tab="tab-quiz" aria-label="Luyện tập">
+        <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 14 14"/>
+        </svg>
+        <span class="nav-label">Luyện tập</span>
+      </button>
+
+      <button class="nav-item" data-tab="tab-add" aria-label="Thêm từ">
+        <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        <span class="nav-label">Thêm từ</span>
+      </button>
+
+      <button class="nav-item" data-tab="tab-contact" aria-label="Liên hệ">
+        <svg class="nav-svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span class="nav-label">Liên hệ</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- APPLICATION LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

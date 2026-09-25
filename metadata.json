@@ -1,0 +1,6 @@
+{
+  "name": "Từ điển & Dịch thuật Việt - Jrai",
+  "description": "Ứng dụng tra cứu từ điển và dịch thuật hai chiều Tiếng Việt - Tiếng Jrai, hỗ trợ phát âm, thêm từ mới, luyện tập ghi nhớ và tối ưu trải nghiệm di động.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
