@@ -181,7 +181,10 @@
   async function loadDictionaryData() {
     try {
       if (el.statBadge) el.statBadge.textContent = 'Đang đồng bộ...';
-      const response = await fetch('./dictionary.json');
+      let response = await fetch('./dictionary.json');
+      if (!response.ok) {
+        response = await fetch('/dictionary.json');
+      }
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -873,10 +876,20 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // ==========================================================================
+  // BOOTSTRAP APP (ROBUST READY CHECK FOR VERCEL & MODULES)
+  // ==========================================================================
+  function bootstrap() {
     initTheme();
     initEventListeners();
     loadDictionaryData();
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrap);
+  } else {
+    bootstrap();
+  }
 
 })();
+
