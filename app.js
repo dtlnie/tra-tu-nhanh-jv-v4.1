@@ -213,8 +213,13 @@
   // ==========================================================================
   // AUDIO PRONUNCIATION
   // ==========================================================================
-  function pronounce(text, audioUrl, lang = 'vi-VN') {
+  function pronounce(text, audioUrl, lang = 'vi-VN', buttonEl = null) {
     if (!text && !audioUrl) return;
+
+    if (buttonEl) {
+      buttonEl.classList.add('speaking');
+      setTimeout(() => buttonEl.classList.remove('speaking'), 1200);
+    }
 
     if (audioUrl && typeof audioUrl === 'string' && audioUrl.trim().length > 0) {
       try {
@@ -802,7 +807,7 @@
       const q = el.searchInput?.value.trim();
       if (!q) return;
       const isViToJrai = state.direction === 'vi-jrai';
-      pronounce(q, '', isViToJrai ? 'vi-VN' : 'vi-VN');
+      pronounce(q, '', isViToJrai ? 'vi-VN' : 'vi-VN', el.btnSpeakSource);
     });
 
     el.btnSpeakTarget?.addEventListener('click', () => {
@@ -810,14 +815,14 @@
       const isViToJrai = state.direction === 'vi-jrai';
       const text = isViToJrai ? state.currentMatchedWord.tiengJrai : state.currentMatchedWord.tiengViet;
       const audioUrl = isViToJrai ? state.currentMatchedWord.amThanhJrai : state.currentMatchedWord.amThanhViet;
-      pronounce(text, audioUrl, isViToJrai ? 'vi-VN' : 'vi-VN');
+      pronounce(text, audioUrl, isViToJrai ? 'vi-VN' : 'vi-VN', el.btnSpeakTarget);
     });
 
     el.btnSpeakExample?.addEventListener('click', () => {
       if (!state.currentMatchedWord) return;
       const isViToJrai = state.direction === 'vi-jrai';
       const example = isViToJrai ? state.currentMatchedWord.viDuJrai : state.currentMatchedWord.viDuViet;
-      pronounce(example, '', isViToJrai ? 'vi-VN' : 'vi-VN');
+      pronounce(example, '', isViToJrai ? 'vi-VN' : 'vi-VN', el.btnSpeakExample);
     });
 
     el.btnCopyTarget?.addEventListener('click', () => {
